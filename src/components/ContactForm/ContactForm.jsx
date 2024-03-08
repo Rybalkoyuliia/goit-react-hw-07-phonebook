@@ -6,9 +6,10 @@ import {
   StyledLabel,
 } from './ContactForm.styled';
 import { useDispatch, useSelector } from 'react-redux';
-import { addContacts, selectContacts } from 'components/redux/slice';
+import { selectContacts } from 'components/redux/slice';
 import InputMask from 'react-input-mask';
 import { useState } from 'react';
+import { addDataThunk } from 'components/redux/operations';
 
 const ContactForm = () => {
   const contacts = useSelector(selectContacts);
@@ -20,24 +21,30 @@ const ContactForm = () => {
 
   const handleSubmit = e => {
     e.preventDefault();
-    const number = e.target.elements.number.value;
+    const phone = e.target.elements.number.value;
     const name = e.target.elements.name.value;
 
-    if (name.trim() === '' || number.trim() === '') {
+    if (name.trim() === '' || phone.trim() === '') {
       return;
     }
 
     if (contacts.find(person => person.name === name)) {
       alert(`${name} is already in contacts!`);
       return;
-    } else if (contacts.find(person => person.number === number)) {
-      alert(`${name}'s number "${number}" is already in contacts!`);
+    } else if (contacts.find(person => person.phone === phone)) {
+      alert(`${name}'s number "${phone}" is already in contacts!`);
       return;
     } else if (!validatePhoneNumber(e)) {
       alert(`Phone is invalid`);
       return;
     } else {
-      dispatch(addContacts(name, number));
+      dispatch(
+        addDataThunk({
+          name,
+          phone,
+          createdAt: new Date().toLocaleTimeString(),
+        })
+      );
     }
 
     const reset = () => {
@@ -77,12 +84,12 @@ const ContactForm = () => {
                 padding: '2px 8px',
                 outline: 'none',
               }}
-              mask="(999)999-9999"
+              mask="999-999-9999"
               type="tel"
               name="number"
               value={mask}
               onChange={changeMask}
-              placeholder="(000)000-0000"
+              placeholder="000-000-0000"
               required
             ></InputMask>
           </StyledLabel>

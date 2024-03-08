@@ -1,4 +1,3 @@
-import { nanoid } from 'nanoid';
 import React from 'react';
 import {
   ListWrapper,
@@ -11,34 +10,36 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import {
   filteredContacts,
-  removeContacts,
   selectContacts,
+  selectIsLoading,
 } from 'components/redux/slice';
+import { deleteDataThunk } from 'components/redux/operations';
 
 export default function ContactList() {
   const dispatch = useDispatch();
   const contacts = useSelector(selectContacts);
   const filter = useSelector(filteredContacts);
 
-  const handleDelete = id => dispatch(removeContacts(id));
-
   const handleFilteredList = () => {
     return contacts.filter(
       contact =>
         contact.name.toLowerCase().includes(filter.toLowerCase()) ||
-        contact.number.includes(filter)
+        contact.phone.includes(filter)
     );
   };
+  const loading = useSelector(selectIsLoading);
 
-  return (
+  return loading ? (
+    <h2>Loading...</h2>
+  ) : (
     <ListWrapper>
-      {handleFilteredList().map(({ id = nanoid(6), name, number }) => (
+      {handleFilteredList().map(({ id, name, phone }) => (
         <StyledLiWrapper key={id}>
           <SpanWrapper>
             <StyledName>{name}</StyledName>
-            <StyledNumber>{number}</StyledNumber>
+            <StyledNumber>{phone}</StyledNumber>
           </SpanWrapper>
-          <StyledDelButton onClick={() => handleDelete(id)}>
+          <StyledDelButton onClick={() => dispatch(deleteDataThunk(id))}>
             Delete
           </StyledDelButton>
         </StyledLiWrapper>

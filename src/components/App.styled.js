@@ -33,3 +33,5 @@ export const StyledTitle = styled.h2`
   color: rgb(255, 255, 255);
   padding-left: 15px;
 `;
+
+export const StyledBtns = styled.ul``;
