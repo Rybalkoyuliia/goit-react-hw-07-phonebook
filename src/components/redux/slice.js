@@ -48,8 +48,6 @@ const slice = createSlice({
     filteredContacts: state => state.filter,
     selectIsLoading: state => state.contacts.isLoading,
     selectIsError: state => state.contacts.error,
-    selectFilteredButtons: state => state.filteredButtons,
-    selectFiltered: state => state.contacts.filtered,
   },
 });
 
